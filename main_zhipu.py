@@ -19,8 +19,18 @@ st.subheader("我的聊天机器人")
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = ChatMessageHistory()
 
-# 初始化模型和prompt template
-model = ChatZhipuAI(model="glm-4-flash",api_key=os.getenv('ZHIPU_API_KEY'))
+def get_api_key():
+    api_key = os.environ.get('ZHIPU_API_KEY')
+    if api_key:
+        return api_key
+    else:
+        api_key = st.secrets["ZHIPU_API_KEY"]
+        return api_key
+
+
+model = ChatZhipuAI(model="glm-4-flash",api_key=get_api_key())
+
+
 prompt_template = ChatPromptTemplate.from_messages([
     ("system", "你是一个友好的助手。请记住用户告诉你的信息，特别是用户的名字等个人信息。"),
     MessagesPlaceholder("msgs")
